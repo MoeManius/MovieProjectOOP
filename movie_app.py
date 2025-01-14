@@ -1,87 +1,64 @@
-from istorage import IStorage
+from omdb_api import OmdbApi
+
 
 class MovieApp:
-    def __init__(self, storage: IStorage):
-        """Initialize the MovieApp with a storage instance."""
+    def __init__(self, storage, omdb_api):
         self._storage = storage
-
-    def _command_list_movies(self):
-        """List all movies in the storage."""
-        movies = self._storage.list_movies()
-        if not movies:
-            print("No movies available.")
-        else:
-            for title, details in movies.items():
-                print(f"{title} (Year: {details['year']}): Rating {details['rating']}")
-
-    def _command_movie_stats(self):
-        """Calculate and display movie statistics."""
-        movies = self._storage.list_movies()
-        if not movies:
-            print("No movies available to calculate statistics.")
-            return
-
-        ratings = [details['rating'] for details in movies.values()]
-        average_rating = sum(ratings) / len(ratings)
-        print(f"Average rating: {average_rating:.2f}")
+        self._omdb_api = omdb_api
 
     def _command_add_movie(self):
-        """Add a new movie to the storage."""
-        title = input("Enter the movie title: ").strip()
-        year = input("Enter the movie year: ").strip()
-        rating = float(input("Enter the movie rating: ").strip())
-        poster = input("Enter the movie poster URL: ").strip()
-        self._storage.add_movie(title, year, rating, poster)
-        print(f"Movie '{title}' added successfully.")
+        """Handle adding a movie by fetching data from OMDB API."""
+        title = input("Enter movie title: ")
+        movie_data = self._omdb_api.get_movie_data(title)
 
-    def _command_delete_movie(self):
-        """Delete a movie from the storage."""
-        title = input("Enter the movie title to delete: ").strip()
-        self._storage.delete_movie(title)
-        print(f"Movie '{title}' deleted successfully.")
+        if movie_data:
+            print(f"Adding movie: {movie_data['title']}, Year: {movie_data['year']}, Rating: {movie_data['rating']}")
+            self._storage.add_movie(movie_data['title'], movie_data['year'], movie_data['rating'], movie_data['poster'])
+            print("Movie added successfully.")
+        else:
+            print("Failed to fetch movie data from OMDB.")
 
-    def _command_update_movie(self):
-        """Update the rating of a movie."""
-        title = input("Enter the movie title to update: ").strip()
-        rating = float(input(f"Enter the new rating for '{title}': ").strip())
-        self._storage.update_movie(title, rating)
-        print(f"Rating for '{title}' updated successfully.")
+    def _command_list_movies(self):
+        movies = self._storage.list_movies()
+        if movies:
+            for title, data in movies.items():
+                print(f"Title: {title}, Year: {data['year']}, Rating: {data['rating']}")
+        else:
+            print("No movies found.")
+
+    def _command_movie_stats(self):
+        movies = self._storage.list_movies()
+        if movies:
+            total_movies = len(movies)
+            avg_rating = sum([movie['rating'] for movie in movies.values()]) / total_movies if total_movies > 0 else 0
+            print(f"Total movies: {total_movies}, Average rating: {avg_rating}")
+        else:
+            print("No movies found.")
 
     def _generate_website(self):
-        """Generate a simple website (for future use)."""
-        # Placeholder for generating a website (this can be expanded later)
-        print("Generating website...")
-
-    def _display_menu(self):
-        """Display the menu options."""
-        print("\n********** Movie App **********")
-        print("1. List Movies")
-        print("2. Add Movie")
-        print("3. Update Movie Rating")
-        print("4. Delete Movie")
-        print("5. Show Movie Stats")
-        print("6. Generate Website")
-        print("0. Exit")
+        # Logic for generating website would go here (similar to your previous code)
+        pass
 
     def run(self):
-        """Run the MovieApp."""
         while True:
-            self._display_menu()
-            choice = input("Enter your choice: ").strip()
-            if choice == '0':
-                print("Exiting the Movie App.")
-                break
-            elif choice == '1':
+            print("\nMovie App Menu:")
+            print("1. List Movies")
+            print("2. Add Movie")
+            print("3. Movie Stats")
+            print("4. Generate Website")
+            print("5. Exit")
+
+            choice = input("Enter command: ")
+
+            if choice == '1':
                 self._command_list_movies()
             elif choice == '2':
                 self._command_add_movie()
             elif choice == '3':
-                self._command_update_movie()
-            elif choice == '4':
-                self._command_delete_movie()
-            elif choice == '5':
                 self._command_movie_stats()
-            elif choice == '6':
+            elif choice == '4':
                 self._generate_website()
+            elif choice == '5':
+                break
             else:
-                print("Invalid choice, please try again.")
+                print("Invalid command.")
