@@ -21,23 +21,20 @@ class StorageJson(IStorage):
             'rating': rating,
             'poster': poster
         }
-        self.save_movies(movies)
+        self._save_movies(movies)
 
     def delete_movie(self, title):
         movies = self.list_movies()
         if title in movies:
             del movies[title]
-            self.save_movies(movies)
+            self._save_movies(movies)
 
     def update_movie(self, title, rating):
         movies = self.list_movies()
         if title in movies:
             movies[title]['rating'] = rating
-            self.save_movies(movies)
+            self._save_movies(movies)
 
-    def save_movies(self, movies):
-        try:
-            with open(self.file_path, 'w', encoding='utf-8') as file:
-                json.dump(movies, file, indent=4, ensure_ascii=False)
-        except IOError as e:
-            print(f"Error saving movies: {e}")
+    def _save_movies(self, movies):
+        with open(self.file_path, 'w', encoding='utf-8') as file:
+            json.dump(movies, file, indent=4, ensure_ascii=False)

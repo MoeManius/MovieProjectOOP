@@ -12,12 +12,12 @@ class StorageCsv(IStorage):
                 reader = csv.DictReader(file)
                 for row in reader:
                     movies[row['title']] = {
-                        'year': int(row['year']),
-                        'rating': float(row['rating']),
+                        'rating': row['rating'],
+                        'year': row['year'],
                         'poster': row['poster']
                     }
         except FileNotFoundError:
-            pass
+            return {}
         return movies
 
     def add_movie(self, title, year, rating, poster):
@@ -27,31 +27,28 @@ class StorageCsv(IStorage):
             'rating': rating,
             'poster': poster
         }
-        self.save_movies(movies)
+        self._save_movies(movies)
 
     def delete_movie(self, title):
         movies = self.list_movies()
         if title in movies:
             del movies[title]
-            self.save_movies(movies)
+            self._save_movies(movies)
 
     def update_movie(self, title, rating):
         movies = self.list_movies()
         if title in movies:
             movies[title]['rating'] = rating
-            self.save_movies(movies)
+            self._save_movies(movies)
 
-    def save_movies(self, movies):
-        try:
-            with open(self.file_path, 'w', encoding='utf-8', newline='') as file:
-                writer = csv.DictWriter(file, fieldnames=['title', 'year', 'rating', 'poster'])
-                writer.writeheader()
-                for title, movie in movies.items():
-                    writer.writerow({
-                        'title': title,
-                        'year': movie['year'],
-                        'rating': movie['rating'],
-                        'poster': movie['poster']
-                    })
-        except IOError as e:
-            print(f"Error saving movies: {e}")
+    def _save_movies(self, movies):
+        with open(self.file_path, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=['title', 'year', 'rating', 'poster'])
+            writer.writeheader()
+            for title, details in movies.items():
+                writer.writerow({
+                    'title': title,
+                    'year': details['year'],
+                    'rating': details['rating'],
+                    'poster': details['poster']
+                })
