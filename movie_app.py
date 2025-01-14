@@ -1,50 +1,40 @@
-from istorage import IStorage
-from omdb_api import OmdbApi
-
+import requests
 
 class MovieApp:
-    def __init__(self, storage: IStorage):
-        self._storage = storage
+    def __init__(self, storage):
+        self.storage = storage
+        self.api_key = "f2dca233"
 
-    def _command_list_movies(self):
-        movies = self._storage.list_movies()
-        for movie, details in movies.items():
-            print(f"{movie} (Year: {details['year']}): {details['rating']}")
+    def list_movies(self):
+        return self.storage.list_movies()
 
-    def _command_add_movie(self):
-        title = input("Enter movie title: ").strip()
-        omdb = OmdbApi()
-        movie_data = omdb.fetch_movie_data(title)
+    def add_movie(self, title):
+        # Call the OMDb API to search for the movie
+        url = f"http://www.omdbapi.com/?t={title}&apikey={self.api_key}"
+        response = requests.get(url)
+        movie_data = response.json()
 
-        if movie_data:
-            self._storage.add_movie(movie_data['Title'], movie_data['Year'], movie_data['imdbRating'],
-                                    movie_data['Poster'])
-            print("Movie added successfully.")
+        # Debugging the API response
+        print(f"OMDb API response: {movie_data}")  # Log the response to console
+
+        if movie_data.get("Response") == "True":
+            # Extract movie details
+            title = movie_data.get("Title")
+            year = movie_data.get("Year")
+            rating = movie_data.get("imdbRating")
+            poster = movie_data.get("Poster")
+
+            # Add the movie to the storage
+            self.storage.add_movie(title, year, rating, poster)
+            return f"{title} has been added successfully!"
         else:
-            print("Movie not found or error fetching data.")
+            # Log any errors from the API response
+            error_message = movie_data.get("Error", "Movie not found.")
+            print(f"Error from OMDb API: {error_message}")  # Log error response to console
+            return f"Error: {error_message}"
 
-    def _command_movie_stats(self):
-        movies = self._storage.list_movies()
-        print(f"Total movies: {len(movies)}")
+    def delete_movie(self, title):
+        self.storage.delete_movie(title)
 
-    def _generate_website(self):
-        pass
-
-    def run(self):
-        while True:
-            print("Movie App Menu")
-            print("1. List movies")
-            print("2. Add movie")
-            print("3. Movie stats")
-            print("4. Exit")
-            choice = input("Enter choice: ").strip()
-            if choice == '1':
-                self._command_list_movies()
-            elif choice == '2':
-                self._command_add_movie()
-            elif choice == '3':
-                self._command_movie_stats()
-            elif choice == '4':
-                break
-            else:
-                print("Invalid choice. Try again.")
+    def update_movie(self, title, rating):
+        self.storage.update_movie(title, rating)

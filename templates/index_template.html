@@ -1,0 +1,52 @@
+<html>
+<head>
+    <title>My Movie App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+<div class="list-movies-title">
+    <h1>My Movie Collection</h1>
+</div>
+
+<div>
+    <h3>Add a Movie</h3>
+    <form action="/add" method="POST">
+        <input type="text" name="title" placeholder="Enter Movie Title" required/>
+        <button type="submit">Add Movie</button>
+    </form>
+</div>
+
+<div>
+    <h3>Movie List</h3>
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <div class="scrollable-movie-grid">
+        <ol class="movie-grid">
+            {% for title, movie in movies.items() %}
+                <li class="movie">
+                    <!-- Display the movie poster -->
+                    <img src="{{ movie.poster }}" class="movie-poster" alt="{{ title }} poster"/>
+                    <div class="movie-title">{{ title }}</div>
+                    <div class="movie-year">{{ movie.year }}</div>
+                    <div class="movie-rating">
+                        <strong>Rating:</strong> {{ movie.rating }}
+                    </div>
+
+                    <form action="/delete/{{ title }}" method="POST">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form action="/update/{{ title }}" method="POST">
+                        <input type="number" name="rating" placeholder="New Rating" min="0" max="10"/>
+                        <button type="submit">Update Rating</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+</body>
+</html>
