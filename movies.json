@@ -1,1 +1,27 @@
-{}
+{
+    "Rockwell Tools Bladerunner X2": {
+        "year": "2015",
+        "rating": "5",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNTc3NDczMTUtYjk5OS00NTYwLTg0NTgtZjZiZmU0MzE3N2MzXkEyXkFqcGc@._V1_SX300.jpg"
+    },
+    "Titanic": {
+        "year": "1997",
+        "rating": "7.9",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYzYyN2FiZmUtYWYzMy00MzViLWJkZTMtOGY1ZjgzNWMwN2YxXkEyXkFqcGc@._V1_SX300.jpg"
+    },
+    "Conjuring": {
+        "year": "1896",
+        "rating": "5.5",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZjRkZjUwYWMtZjM5Ny00YTM0LWE2N2UtMmFhMWRlMDQzMTRhXkEyXkFqcGc@._V1_SX300.jpg"
+    },
+    "Itsy Bitsy Spider": {
+        "year": "2020",
+        "rating": "6.6",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZDYzOTY0ZDAtOTExOC00NDM3LTgyYzktNGE4ODEyYWZjMjk2XkEyXkFqcGc@._V1_SX300.jpg"
+    },
+    "Squid Game": {
+        "year": "2021–2025",
+        "rating": "8.0",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYTYzMTlmNDctNmVkNS00YzRlLWE5MjAtODdjZWRkYzRlNWVlXkEyXkFqcGc@._V1_SX300.jpg"
+    }
+}

@@ -9,6 +9,16 @@ storage = StorageJson("movies.json")
 
 @app.route('/')
 def index():
+    """
+    Render the index page displaying a list of movies.
+
+    This function retrieves the list of movies from the storage, generates
+    the HTML for displaying the movie grid, and renders it using the
+    `index_template.html` template.
+
+    Returns:
+        Response: The rendered HTML page with the movie grid.
+    """
     # Get the list of movies from storage
     movies = storage.list_movies()
 
